@@ -8,14 +8,41 @@
 import SwiftUI
 
 struct ContentView: View {
+    let menu: Menu
+    var cart = Cart()
+    @State private var menuToShow = [FoodItem]()
+        
     var body: some View {
-        Text("Hello, world!")
-            .padding()
+        NavigationView {
+            VStack {
+                ScrollView(.horizontal) {
+                    LazyHGrid(rows: [GridItem(.flexible())], alignment: .center) {
+                        ForEach(menu.categories) { category in
+                            CategoryCell(category: category)
+                                .onTapGesture {
+                                    menuToShow = category.items
+                                }
+                        }
+                    }
+                }
+                .padding()
+                .frame(maxHeight: 150)
+                
+                Spacer()
+                
+                List(menuToShow) { foodItem in
+                    FoodItemCell(foodItem: foodItem)
+                }
+                
+            }
+            .navigationTitle("Menu")
+            .navigationBarItems(trailing: Text("1"))
+        }
     }
 }
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView()
+        ContentView(menu: Menu.example)
     }
 }
